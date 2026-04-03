@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SSAG Command Center Elite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f19;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    header {
+      padding: 20px;
+      background: #111827;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .card {
+      background: #1f2937;
+      padding: 20px;
+      margin: 15px auto;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #9ca3af;
+    }
+
+    .value {
+      font-size: 28px;
+      font-weight: bold;
+      color: #22c55e;
+    }
+
+    .status {
+      margin-top: 20px;
+      color: #60a5fa;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  SSAG Command Center Elite
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="title">System Status</div>
+    <div class="value" id="status">Connecting...</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Total Deals</div>
+    <div class="value" id="deals">--</div>
+  </div>
+
+  <div class="card">
+    <div class="title">Revenue</div>
+    <div class="value" id="revenue">$0</div>
+  </div>
+
+  <div class="status" id="message"></div>
+
+</div>
+
+<script>
+  const API_URL = "https://YOUR-RENDER-URL/api/data"; // <-- CHANGE THIS
+
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("status").innerText = "ONLINE";
+      document.getElementById("deals").innerText = data.deals;
+      document.getElementById("revenue").innerText = "$" + data.revenue;
+      document.getElementById("message").innerText = data.message;
+    })
+    .catch(err => {
+      document.getElementById("status").innerText = "OFFLINE";
+      document.getElementById("message").innerText = "Backend not connected";
+      console.error(err);
+    });
+</script>
+
+</body>
+</html>
