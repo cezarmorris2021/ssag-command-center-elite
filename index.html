@@ -19,6 +19,7 @@
       background: #111827;
       font-size: 22px;
       font-weight: bold;
+      letter-spacing: 1px;
     }
 
     .container {
@@ -29,27 +30,36 @@
       background: #1f2937;
       padding: 20px;
       margin: 15px auto;
-      border-radius: 10px;
+      border-radius: 12px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
 
     .title {
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 10px;
       color: #9ca3af;
     }
 
     .value {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
       color: #22c55e;
     }
 
-    .status {
+    .status-online {
+      color: #22c55e;
+    }
+
+    .status-offline {
+      color: #ef4444;
+    }
+
+    .message {
       margin-top: 20px;
       color: #60a5fa;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -64,7 +74,7 @@
 
   <div class="card">
     <div class="title">System Status</div>
-    <div class="value" id="status">Connecting...</div>
+    <div class="value" id="status">Checking...</div>
   </div>
 
   <div class="card">
@@ -77,23 +87,26 @@
     <div class="value" id="revenue">$0</div>
   </div>
 
-  <div class="status" id="message"></div>
+  <div class="message" id="message"></div>
 
 </div>
 
 <script>
-  const API_URL = "https://YOUR-RENDER-URL/api/data"; // <-- CHANGE THIS
+  const API_URL = window.location.origin + "/api/data";
 
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
       document.getElementById("status").innerText = "ONLINE";
+      document.getElementById("status").classList.add("status-online");
+
       document.getElementById("deals").innerText = data.deals;
       document.getElementById("revenue").innerText = "$" + data.revenue;
       document.getElementById("message").innerText = data.message;
     })
     .catch(err => {
       document.getElementById("status").innerText = "OFFLINE";
+      document.getElementById("status").classList.add("status-offline");
       document.getElementById("message").innerText = "Backend not connected";
       console.error(err);
     });
