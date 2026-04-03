@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SSAG Dashboard</title>
-  <style>
-    body { background: #000; color: #0ff; font-family: Arial; padding: 20px; }
-    input, button { padding: 10px; margin: 5px; }
-    .box { border: 1px solid #0ff; padding: 15px; margin-top: 20px; }
-  </style>
+<title>SSAG Dashboard</title>
+
+<style>
+body { background:#000; color:#0ff; font-family:Arial; padding:20px; }
+input, button { padding:10px; margin:5px; }
+.box { border:1px solid #0ff; padding:15px; margin-top:20px; }
+</style>
+
 </head>
 <body>
 
 <h1>SSAG Command Center 🚀</h1>
 
 <div class="box">
-  <h2>Add Deal</h2>
-  <input id="name" placeholder="Deal name">
-  <input id="value" placeholder="Value">
-  <button onclick="addDeal()">Add</button>
+<h2>Add Deal</h2>
+<input id="name" placeholder="Deal name">
+<input id="value" placeholder="Value">
+<button onclick="addDeal()">Add</button>
 </div>
 
 <div class="box">
-  <h2>Stats</h2>
-  <button onclick="loadStats()">Refresh</button>
-  <pre id="stats"></pre>
+<h2>Stats</h2>
+<button onclick="loadStats()">Refresh</button>
+<pre id="stats"></pre>
 </div>
 
 <div class="box">
-  <h2>Deals</h2>
-  <button onclick="loadDeals()">Load</button>
-  <pre id="deals"></pre>
+<h2>Deals</h2>
+<button onclick="loadDeals()">Load</button>
+<pre id="deals"></pre>
 </div>
 
 <script>
+
 const API = "https://ssag-command-center-backend.onrender.com";
 
 async function addDeal() {
@@ -40,24 +43,30 @@ async function addDeal() {
 
   await fetch(API + "/deals", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, value })
   });
 
   alert("Deal added");
-}
 
-async function loadStats() {
-  const res = await fetch(API + "/stats");
-  const data = await res.json();
-  document.getElementById("stats").textContent = JSON.stringify(data, null, 2);
+  loadDeals();   // 🔥 auto refresh
+  loadStats();   // 🔥 auto refresh
 }
 
 async function loadDeals() {
   const res = await fetch(API + "/deals");
   const data = await res.json();
-  document.getElementById("deals").textContent = JSON.stringify(data, null, 2);
+  document.getElementById("deals").innerText =
+    JSON.stringify(data, null, 2);
 }
+
+async function loadStats() {
+  const res = await fetch(API + "/stats");
+  const data = await res.json();
+  document.getElementById("stats").innerText =
+    JSON.stringify(data, null, 2);
+}
+
 </script>
 
 </body>
