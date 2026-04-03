@@ -9,4 +9,6 @@ services:
     autoDeploy: true
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: ssag-db
+          property: connectionString
