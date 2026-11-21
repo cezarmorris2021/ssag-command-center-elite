@@ -1,73 +1,24 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>SSAG Dashboard</title>
-
-<style>
-body { background:#000; color:#0ff; font-family:Arial; padding:20px; }
-input, button { padding:10px; margin:5px; }
-.box { border:1px solid #0ff; padding:15px; margin-top:20px; }
-</style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SSAG command center service status">
+  <title>SSAG Command Center Status</title>
+  <style>
+    :root { color-scheme: dark; font-family: Arial, sans-serif; background:#07111f; color:#eff7ff; }
+    body { margin:0; padding:24px; }
+    main { max-width:760px; margin:8vh auto; padding:24px; border:1px solid #31506e; border-radius:16px; background:#0d1a2a; }
+    h1 { margin-top:0; color:#61d9ff; font-size:clamp(1.6rem,5vw,2.5rem); }
+    .notice { border-left:5px solid #ffbf47; padding:14px; background:#1f2630; line-height:1.5; }
+    p { line-height:1.55; color:#d6e3f0; }
+  </style>
 </head>
 <body>
-
-<h1>SSAG Command Center 🚀</h1>
-
-<div class="box">
-<h2>Add Deal</h2>
-<input id="name" placeholder="Deal name">
-<input id="value" placeholder="Value">
-<button onclick="addDeal()">Add</button>
-</div>
-
-<div class="box">
-<h2>Stats</h2>
-<button onclick="loadStats()">Refresh</button>
-<pre id="stats"></pre>
-</div>
-
-<div class="box">
-<h2>Deals</h2>
-<button onclick="loadDeals()">Load</button>
-<pre id="deals"></pre>
-</div>
-
-<script>
-
-const API = "https://ssag-command-center-backend.onrender.com";
-
-async function addDeal() {
-  const name = document.getElementById("name").value;
-  const value = document.getElementById("value").value;
-
-  await fetch(API + "/deals", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, value })
-  });
-
-  alert("Deal added");
-
-  loadDeals();   // 🔥 auto refresh
-  loadStats();   // 🔥 auto refresh
-}
-
-async function loadDeals() {
-  const res = await fetch(API + "/deals");
-  const data = await res.json();
-  document.getElementById("deals").innerText =
-    JSON.stringify(data, null, 2);
-}
-
-async function loadStats() {
-  const res = await fetch(API + "/stats");
-  const data = await res.json();
-  document.getElementById("stats").innerText =
-    JSON.stringify(data, null, 2);
-}
-
-</script>
-
+  <main>
+    <h1>SSAG Command Center</h1>
+    <p class="notice"><strong>Not ready for live business records.</strong> This older dashboard has no verified sign-in or protected, long-term record storage. Deal entry, deal lists, and totals are paused.</p>
+    <p>Do not enter customer details, payment information, or private business records here. “Server online” would only mean that the server answered; it would not mean the command center is connected to a working CRM.</p>
+  </main>
 </body>
 </html>
