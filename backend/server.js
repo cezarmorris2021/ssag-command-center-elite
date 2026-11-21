@@ -2,70 +2,80 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const PORT = Number(process.env.PORT || 10000);
 
-app.use(cors());
-app.use(express.json());
+app.disable("x-powered-by");
+app.set("trust proxy", 1);
 
-let deals = [];
+const allowedOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-// Home
-app.get("/", (req, res) => {
-  res.send("SSAG BACKEND LIVE 🚀");
-});
-
-// Add deal
-app.post("/deals", (req, res) => {
-  const { name, value } = req.body || {};
-
-  if (!name || value === undefined || value === null || Number.isNaN(Number(value))) {
-    return res.status(400).json({
-      success: false,
-      error: "Missing or invalid deal data"
-    });
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Origin not allowed"));
   }
+}));
+app.use(express.json({ limit: "64kb" }));
+app.use((_req, res, next) => {
+  res.set({
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+    "Cache-Control": "no-store"
+  });
+  next();
+});
 
-  const deal = {
-    id: Date.now(),
-    name: String(name),
-    value: Number(value)
-  };
-
-  deals.push(deal);
-
+app.get("/", (_req, res) => {
   res.json({
-    success: true,
-    deal,
-    totalDeals: deals.length
+    ok: true,
+    service: "SSAG Command Center",
+    status: "limited",
+    storage: "memory-only",
+    persistence: false,
+    authentication: false,
+    health: "/api/health"
   });
 });
 
-// Get all deals
-app.get("/deals", (req, res) => {
-  res.json(deals);
-});
-
-// Stats
-app.get("/stats", (req, res) => {
-  const totalDeals = deals.length;
-  const totalValue = deals.reduce((sum, d) => sum + Number(d.value || 0), 0);
-  const averageValue = totalDeals ? totalValue / totalDeals : 0;
-
-  const biggest = deals.reduce(
-    (max, d) => (Number(d.value) > Number(max.value || 0) ? d : max),
-    { name: "None", value: 0 }
-  );
-
+app.get("/api/health", (_req, res) => {
   res.json({
-    totalDeals,
-    totalValue,
-    averageValue,
-    biggestDealName: biggest.name || "None",
-    biggestDealValue: biggest.value || 0
+    ok: true,
+    service: "SSAG Command Center",
+    storage: "memory-only",
+    persistence: false,
+    authentication: false,
+    warning: "Deal routes are disabled until protected sign-in and durable storage are implemented and verified."
   });
 });
 
-const PORT = process.env.PORT || 10000;
+app.post("/deals", (_req, res) => {
+  res.status(503).json({
+    success: false,
+    error: "Deal entry is paused. This service has no verified sign-in or durable storage.",
+    persistence: false
+  });
+});
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+app.get("/deals", (_req, res) => {
+  res.status(503).json({
+    error: "Deal records are unavailable until a protected, durable CRM is connected.",
+    persistence: false
+  });
+});
+
+app.get("/stats", (_req, res) => {
+  res.status(503).json({
+    error: "Deal totals are unavailable until a protected, durable CRM is connected.",
+    persistence: false
+  });
+});
+
+app.use((_req, res) => res.status(404).json({ ok: false, error: "Route not found" }));
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`SSAG Command Center limited service listening on ${PORT}`);
 });
